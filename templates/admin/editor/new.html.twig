@@ -8,11 +8,8 @@
         <h1>Ajout d'auteur</h1>
         
         {{ form_start(form) }}
-        {{ form_row(form.name, {label: 'Nom'}) }}
-        {{ form_row(form.dateOfBirth, {label: 'Date de Naissance'}) }}
-        {{ form_row(form.dateOfDeath, {label: 'Date de Décès'}) }}
-        {{ form_row(form.nationality, {label: 'Nationalité'}) }}
-        {{ form_row(form.books, {label: 'Livres'}) }}
+        {{ form_row(form.name, {label: 'Nom d\'éditeur'}) }}
+        
         <button type="submit" class="btn btn-primary">Envoyer</button>
         {{ form_end(form) }}
     </div>

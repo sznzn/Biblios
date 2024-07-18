@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+{% block title %}Ajout de livre{% endblock %}
+
+{% block body %}
+
+    
+    <div class="w-50 mx-auto my-3 ">
+        <h1>Ajout de livre </h1>
+        
+        {{ form_start(form) }}
+        {{ form_row(form.titre, {label: 'Titre'}) }}
+        {{ form_row(form.isbn, {label: 'Numéro ISBN'}) }}
+        {{ form_row(form.cover, {label: 'Couverture(lien URL)'}) }}
+        {{ form_row(form.editedAt, {label: "Date d'édition"}) }}
+        {{ form_row(form.plot, {label: 'Synopsis'}) }}
+        {{ form_row(form.pageNumber, {label: 'Nombre de pages'}) }}
+        {{ form_row(form.status, {label: 'Statut'}) }}
+        {{ form_row(form.authors, {label: 'Auteurs'}) }}
+        {{ form_row(form.editor, {label: 'Éditeur'}) }}
+        
+        <button type="submit" class="btn btn-primary">Envoyer</button>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
