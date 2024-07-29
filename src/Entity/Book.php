@@ -2,12 +2,14 @@
 
 namespace App\Entity;
 
+
 use App\Enum\BookStatus;
-use App\Repository\BookRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\BookRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
 class Book
@@ -17,21 +19,32 @@ class Book
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotBlank()]
+    #[Assert\Length(min: 1)]
     #[ORM\Column(length: 255)]
     private ?string $titre = null;
 
+    #[Assert\Isbn(
+        type: Assert\Isbn::ISBN_10,
+        message: 'This value is not valid.',
+    )]
     #[ORM\Column(length: 255)]
     private ?string $isbn = null;
 
+    #[Assert\Url]
     #[ORM\Column(length: 255)]
     private ?string $cover = null;
 
+    #[Assert\NotBlank()]
     #[ORM\Column]
     private ?\DateTimeImmutable $editedAt = null;
 
+    #[Assert\NotBlank()]
+    #[Assert\Type('string')]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $plot = null;
 
+    #[Assert\Type('integer')]
     #[ORM\Column]
     private ?int $pageNumber = null;
 
