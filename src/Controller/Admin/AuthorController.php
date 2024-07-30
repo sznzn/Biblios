@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Author;
 use App\Form\AuthorType;
+use App\Repository\AuthorRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,10 +15,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class AuthorController extends AbstractController
 {
     #[Route('', name: 'admin_author')]
-    public function index(): Response
+    public function index(AuthorRepository $repository): Response
     {
+            $authors = $repository->findAll();
+
         return $this->render('admin/author/index.html.twig', [
             'controller_name' => 'AuthorController',
+            'authors' => $authors
         ]);
     }
 
