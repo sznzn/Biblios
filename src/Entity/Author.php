@@ -16,7 +16,7 @@ class Author
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Assert\Length(min: 10)]
+    #[Assert\Length(min: 5)]
     #[Assert\NotBlank()]
     #[ORM\Column(length: 255)]
     private ?string $name = null;

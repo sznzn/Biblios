@@ -15,14 +15,30 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class AuthorController extends AbstractController
 {
     #[Route('', name: 'admin_author')]
-    public function index(AuthorRepository $repository): Response
+    public function index(Request $request, AuthorRepository $repository): Response
     {
-            $authors = $repository->findAll();
+
+        //search
+        $dates = [];
+        if($request->query->has('start')){
+            $dates['start'] = $request->query->get('start');
+        }
+
+        if($request->query->has('end')){
+            $dates['end'] = $request->query->get('end');
+        }
+
+        $authors = $repository->findByDateOfBirth($dates);
+
+        //page de authors
+        // $authors = $repository->findAll();
 
         return $this->render('admin/author/index.html.twig', [
             'controller_name' => 'AuthorController',
             'authors' => $authors
         ]);
+
+        
     }
 
     #[Route('/new', name: 'admin_author_new', methods: ['GET', 'POST'])]
@@ -40,6 +56,14 @@ class AuthorController extends AbstractController
         
         return $this->render('admin/author/new.html.twig', [
             'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'admin_author_show', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function show(?Author $author): Response
+    {
+        return $this->render('admin/author/show.html.twig', [
+            'author' => $author
         ]);
     }
 }

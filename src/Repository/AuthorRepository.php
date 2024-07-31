@@ -40,4 +40,48 @@ class AuthorRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findByDateOfBirth(array $dates = []): array
+    {
+        $qb = $this->createQueryBuilder('a');
+
+        if(\array_key_exists('start', $dates)){
+            $startDate = \DateTimeImmutable::createFromFormat('d-m-Y', $dates['start']);
+            if($startDate){
+                $qb->andWhere('a.dateOfBirth >= :start')
+                ->setParameter('start', $startDate);
+            }else{
+                echo "Invalid start date format: " . $dates['start'];
+            }
+
+        }else {
+            echo "Start date is not provided or empty.<br>";
+        }
+        
+        
+        if(\array_key_exists('end', $dates)){
+            $endDate = \DateTimeImmutable::createFromFormat('d-m-Y', $dates['end']);
+            if($endDate){
+                $qb->andWhere('a.dateOfBirth <= :end')
+                ->setParameter('end', $endDate);
+            }else{
+                echo "Invalid start date format: " . $dates['end'];
+            }
+
+        }else {
+            echo "Start date is not provided or empty.<br>";
+        }
+        
+
+        echo $qb->getQuery()->getDQL();
+        echo "<br>";
+        echo "Parameters: ";
+        foreach ($qb->getParameters() as $param) {
+            echo $param->getName() . ": " . $param->getValue()->format('Y-m-d') . "<br>";
+        }
+
+                return $qb->orderBy('a.dateOfBirth', 'DESC')
+                ->getQuery()
+                ->getResult();
+    }
 }
