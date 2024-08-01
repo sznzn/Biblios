@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Détail d'un livre
+{% endblock %}
+
+{% block body %}
+    <section class="py-5">
+            <div class="container px-4 px-lg-5 my-5">
+            <h1>Book : </h1>
+            {% if book is not null %}
+            
+                {{ dump(book) }}
+        
+            
+                <div class="row gx-4 gx-lg-5 align-items-center">
+                    <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" src="https://dummyimage.com/600x700/dee2e6/6c757d.jpg" alt="..." /></div>
+                    <div class="col-md-6">
+                        <div class="small mb-1">ISBN: {{book.isbn}}</div>
+                        <h1 class="display-5 fw-bolder">{{book.titre}}</h1>
+                        <div class="fs-5 mb-5">
+                        {% for author in book.authors %}
+                            <a href="{{ path('admin_author_show', {id: author.id}) }}">{{author.name}}</a>
+                            {% else %}
+                            <p>Pas d'author connu</p>
+                        {% endfor %}
+                    
+                        
+                        {% for editor in book.editor %}
+                            <a href="{{ path('admin_editor_show', {id: editor.id}) }}">{{editor.name}}</a>
+                            {% else %}
+                            <p>Pas d'éditeur connu</p>
+                        {% endfor %}
+                            <p><span>pageNumber</span> - <span>date d'edition</span></p>
+                            <p>statut</p> 
+
+                        </div>
+                        <p class="lead">Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium at dolorem quidem modi. Nam sequi consequatur obcaecati excepturi alias magni, accusamus eius blanditiis delectus ipsam minima ea iste laborum vero?</p>
+                        <div class="d-flex">
+                            <a href="{{ path('admin_book') }}" class="btn btn-primary mb-3">Retour à la liste</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        {% else %} 
+            <div>Livre non trouvé</div>
+        {% endif %}
+        
+    </div>
+        {# <a href="{{ path('admin_book_edit', {id: book.id}) }}" class="btn btn-warning float-end mx-2 mb-3">Editer</a> #}
+{% endblock %}

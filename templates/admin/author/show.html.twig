@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-    <div>
+    <div style="height: 80vh">
         <h1>Author : </h1>
         {% if author is not null %}
         <div class="card mb-1 w-75 mx-auto border-top-0 border-start-0 border-end-0">
@@ -29,6 +29,7 @@
         {% else %} 
             <div>Auteur non trouvé</div>
         {% endif %}
-        <a href="{{ path('admin_author') }}" class="btn btn-primary float-end">Retour</a>
+        <a href="{{ path('admin_author') }}" class="btn btn-primary float-end mx-2 mb-3">Retour</a>
+        <a href="{{ path('admin_author_edit', {id: author.id}) }}" class="btn btn-warning float-end mx-2 mb-3">Editer</a>
     </div>
 {% endblock %}

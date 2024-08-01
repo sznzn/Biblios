@@ -1,20 +1,42 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello BookController!{% endblock %}
+{% block title %}Liste de livres{% endblock %}
 
 {% block body %}
 <style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+
 </style>
+<section class="py-5">
+            <div class="container px-4 px-lg-5 mt-5">
+            <h1>Liste de livres</h1>
+                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                    {% for item in books_with_authors %}
+                    <div class="col mb-5">
+                        <div class="card h-100">
+                            <!-- Product image-->
+                            <img class="card-img-top" src="{{item.book.cover ? item.book.cover : 'https://picsum.photos/200/200'}}" alt="{{item.book.titre}}" />
+                            
+                            <!-- Product details-->
+                            <div class="card-body p-4">
+                                <h5 class="card-title">{{item.book.titre}}</h5>
+                            
+                                <p class="card-text">{{item.authors}}</p>
+                            
+                                        
+                            </div>
+                            <!-- Product actions-->
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{{ path('admin_book_show', {id: book.id}) }}">Voir</a></div>
+                            </div>
+                        </div>
+                    </div>
+                        {% else %}
+                            <p>Aucun enregistrement en base de données</p>
+                    {% endfor %}
+                
+                    
+                </div>
+            </div>
+        </section>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/xampp/htdocs/Xin_Dossiers/monSymfony/Biblios/src/Controller/Admin/BookController.php</code></li>
-        <li>Your template at <code>C:/xampp/htdocs/Xin_Dossiers/monSymfony/Biblios/templates/admin/book/index.html.twig</code></li>
-    </ul>
-</div>
 {% endblock %}

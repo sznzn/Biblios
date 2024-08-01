@@ -6,6 +6,8 @@ use App\Entity\Author;
 use App\Form\AuthorType;
 use App\Repository\AuthorRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -28,7 +30,12 @@ class AuthorController extends AbstractController
             $dates['end'] = $request->query->get('end');
         }
 
-        $authors = $repository->findByDateOfBirth($dates);
+        //Pagination
+        $authors = Pagerfanta::createForCurrentPageWithMaxPerPage(
+            new QueryAdapter($repository->findByDateOfBirth()),
+            $request->query->get(key: 'page', default:1),
+            maxPerPage:10
+        );
 
         //page de authors
         // $authors = $repository->findAll();
@@ -42,16 +49,18 @@ class AuthorController extends AbstractController
     }
 
     #[Route('/new', name: 'admin_author_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $manager): Response
+    #[Route('/{id}/edit', name: 'admin_author_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function new(?Author $author, Request $request, EntityManagerInterface $manager): Response
     {
-        $author = new Author();
+        $author ??= new Author();
+        //如果$author是null 那么就是 $author = new Author(), 如果不是，那么就保留$author本身的值
         $form = $this->createForm(AuthorType::class, $author);
 
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()) {
             $manager->persist($author);
             $manager->flush();
-            return $this->redirectToRoute('admin_author_new');
+            return $this->redirectToRoute('admin_author_show', ['id' => $author->getId()]);
         }
         
         return $this->render('admin/author/new.html.twig', [

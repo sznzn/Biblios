@@ -4,7 +4,9 @@ namespace App\Repository;
 
 use App\Entity\Author;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * @extends ServiceEntityRepository<Author>
@@ -41,7 +43,7 @@ class AuthorRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    public function findByDateOfBirth(array $dates = []): array
+    public function findByDateOfBirth(array $dates = []): QueryBuilder
     {
         $qb = $this->createQueryBuilder('a');
 
@@ -54,9 +56,10 @@ class AuthorRepository extends ServiceEntityRepository
                 echo "Invalid start date format: " . $dates['start'];
             }
 
-        }else {
-            echo "Start date is not provided or empty.<br>";
         }
+        // else {
+        //     echo "Start date is not provided or empty.<br>";
+        // }
         
         
         if(\array_key_exists('end', $dates)){
@@ -68,20 +71,19 @@ class AuthorRepository extends ServiceEntityRepository
                 echo "Invalid start date format: " . $dates['end'];
             }
 
-        }else {
-            echo "Start date is not provided or empty.<br>";
         }
+        // else {
+        //     echo "Start date is not provided or empty.<br>";
+        // }
         
 
-        echo $qb->getQuery()->getDQL();
-        echo "<br>";
-        echo "Parameters: ";
+        // echo $qb->getQuery()->getDQL();
+        // echo "<br>";
+        // echo "Parameters: ";
         foreach ($qb->getParameters() as $param) {
             echo $param->getName() . ": " . $param->getValue()->format('Y-m-d') . "<br>";
         }
 
-                return $qb->orderBy('a.dateOfBirth', 'DESC')
-                ->getQuery()
-                ->getResult();
+                return $qb;
     }
 }
