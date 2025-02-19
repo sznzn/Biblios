@@ -6,6 +6,9 @@ use App\Enum\BookStatus;
 use App\Repository\BookRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
 class Book
@@ -18,8 +21,7 @@ class Book
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
-    #[ORM\ManyToMany(targetEntity: Author::class, inversedBy: 'books')]
-    private Collection $authors;
+    
 
     #[ORM\Column(length: 255)]
     private ?string $isbn = null;
@@ -45,6 +47,14 @@ class Book
     #[ORM\Column(type: Types::ARRAY, nullable: true)]
     private ?array $comments = null;
 
+    #[ORM\ManyToMany(targetEntity: Author::class, inversedBy: 'books')]
+    private Collection $authors;
+    
+    public function __construct()
+    {
+        $this->authors = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -62,10 +72,7 @@ class Book
         return $this;
     }
 
-    public function __construct()
-    {
-        $this->authors = new ArrayCollection();
-    }
+    
 
     public function getAuthors(): Collection
     {

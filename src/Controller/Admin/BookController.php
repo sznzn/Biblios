@@ -7,6 +7,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Book;
+use App\Form\BookType;
+use App\Entity\Author;
+use App\Form\AuthorType;
+use App\Entity\Editor;
+use App\Form\EditorType;
+
 
 #[Route("/admin/book")]
 final class BookController extends AbstractController
