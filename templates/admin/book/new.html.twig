@@ -1,17 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ajouter un livre{% endblock %}
+{% set action = app.current_route == 'app_admin_book_new' ? 'Ajouter' : 'Modifier' %}
+
+{% block title %}{{ action }} de livre{% endblock %}
 
 {% block body %}
-
-<div class="container">
-    <h1 class="text-center my-5">Ajouter un livre</h1>
+<section class="container px-4">
     <div class="w-50 m-auto">
-        {{ form_start(form) }}
+        <h1>{{ action }} de livre</h1>
+
+        {{ form_start(form, {'method': 'POST',
+        'attr': {'data-turbo': 'false'}}) }}
         {{ form_widget(form) }}
-        <button type="submit" class="btn btn-primary">Ajouter</button>
+        <button type="submit" class="btn btn-primary my-3">{{ action }}</button>
         {{ form_end(form) }}
     </div>
-</div>
-
+</section>
 {% endblock %}

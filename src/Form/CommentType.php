@@ -24,6 +24,7 @@ class CommentType extends AbstractType
             ])
             ->add('status', EnumType::class, [
                 'class' => CommentStatus::class,
+                'choice_label' => 'lable',
             ])
             ->add('content', TextareaType::class)
             ->add('book', EntityType::class, [

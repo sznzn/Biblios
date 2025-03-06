@@ -1,51 +1,73 @@
 <?php
-// 在php中， callable 类型表示可以被调用或执行的东西，它是一个可以引用多种可调用函数或方法的类型。
-//具体示例
-// 1.普通函数
-function simpleFunction() {
-    return "Hello, World!";
+// 关于wordpress添加 部分代码的方法
+//添加 shortcode 函数
+
+function display_symfony_formations_shortcode() {
+    //获取数据
+    $symfony_db = new wpdb(
+        SYMFONY_DB_USER,
+        SYMFONY_DB_PASSWORD,
+        SYMFONY_DB_NAME,
+        SYMFONY_DB_HOST
+    );
+    $results = $symfony_db->get_results("
+    SELECT * FROM symfony_formations
+    WHERE status = 'active'
+    ORDER BY created_at DESC
+    LIMIT 3
+    ");
+    //开始输出缓冲
+    ob_start();
+    ?>
+    <div class="formations-grid">
+        <?php foreach ($results as $result): ?>
+            <div class="formation-card">
+                <h3><?php echo $result->title; ?></h3>
+                <p><?php echo $result->description; ?></p>
+                    <a href="https://你的symfony网站.com/register/<?php echo $result->id; ?>">
+                    S'inscrire
+                </a>
+            </div>
+        <?php endforeach; ?>
+    </div>
+    <?php
+    //获取缓冲区的内容
+    $output = ob_get_clean();
+    //返回数据
+    return $output;
 }
 
-// 2.匿名函数/闭包
-$anonymousFunction = function() {
-    return "Hello, World!";
-}
+//添加 shortcode
+add_shortcode('symfony_formations', 'display_symfony_formations_shortcode');
 
-// 3.类方法
-class MyClass {
-    public function myMethod() {
-        return "Hello, World!";
+
+// 想放哪里就添加 [symfony_formations]
+
+// functions.php
+// 添加 Elementor 小部件（可选）
+function register_symfony_formations_widget( $widgets_manager ) {
+    class Symfony_Formations_Widget extends \Elementor\Widget_Base {
+        public function get_name() {
+            return 'symfony_formations';
+        }
+
+        public function get_title() {
+            return 'Formations List';
+        }
+
+        public function get_icon() {
+            return 'eicon-posts-grid';
+        }
+
+        public function get_categories() {
+            return [ 'basic' ];
+        }
+
+        protected function render() {
+            echo do_shortcode('[symfony_formations]');
+        }
     }
 
-    public static function myStaticMethod() {
-        return "Hello, World!";
-    }
+    $widgets_manager->register( new Symfony_Formations_Widget() );
 }
-
-// callalbe 的使用示例
-function processCallable(callable $callable) {
-    return $callable();
-}
-
-// 使用普通函数
-processCallable('simpleFunction');
-
-// 使用匿名函数
-processCallable($ananymousFunction);
-
-// 使用类方法
-$obj = new MyClass();
-processCallable([$obj, 'myMethod']);
-
-// 使用静态方法
-processCallable(['MyClass', 'myStaticMethod']);
-
-// 使用箭头函数
-processCallable(fn() => "Hello, World!");
-//
-
-//实际例子
-
-
-
-
+add_action( 'elementor/widgets/register', 'register_symfony_formations_widget' );

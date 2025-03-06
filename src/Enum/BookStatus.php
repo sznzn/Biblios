@@ -8,7 +8,7 @@ enum BookStatus: string
     case BORROWED = 'borrowed';
     case UNAVAILABLE = 'unavailable';
     
-    public function getlable(): string
+    public function getLabel(): string
     {
         return match($this) {
             self::AVAILABLE => 'Disponible',

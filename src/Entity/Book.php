@@ -8,6 +8,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
@@ -19,40 +20,61 @@ class Book
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 1, max: 255)]
     private ?string $title = null;
 
     
-
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Isbn(type: 'isbn13')]
     private ?string $isbn = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Url]
     private ?string $cover = null;
 
     #[ORM\ManyToOne(inversedBy: 'books')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Editor $editor = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank]
+    #[Assert\Type(\DateTimeImmutable::class)]
+    #[Assert\LessThan(new \DateTimeImmutable('now'))]
     private ?\DateTimeImmutable $editedAt = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 10)]
     private ?string $plot = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank]
+    #[Assert\Type(type: 'integer')]
+    #[Assert\Positive]
+    #[Assert\Range(
+        min:1,
+        max: 9999,
+        notInRangeMessage: 'Le nombre de pages doit être compris entre {{ min }} et {{ max }}'
+    )]
     private ?int $pageNumber = null;
 
     #[ORM\Column(enumType: BookStatus::class)]
     private ?BookStatus $status = null;
 
-    #[ORM\Column(type: Types::ARRAY, nullable: true)]
-    private ?array $comments = null;
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'book', orphanRemoval: true)]
+    private Collection $comments;
 
-    #[ORM\ManyToMany(targetEntity: Author::class, inversedBy: 'books')]
+    #[ORM\ManyToMany(targetEntity: Author::class, inversedBy: 'books', cascade: ['persist'])]
+    #[Assert\Count(min: 1, minMessage: 'Un livre doit avoir au moins un auteur')]
     private Collection $authors;
-    
+
     public function __construct()
     {
         $this->authors = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -179,14 +201,32 @@ class Book
         return $this;
     }
 
-    public function getComments(): ?array
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
     {
         return $this->comments;
     }
 
-    public function setComments(?array $comments): static
+    public function addComment(Comment $comment): self
     {
-        $this->comments = $comments;
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setBook($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getBook() === $this) {
+                $comment->setBook(null);
+            }
+        }
 
         return $this;
     }

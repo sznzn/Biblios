@@ -1,15 +1,16 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ajouter un éditeur{% endblock %}
+{% set action = app.current_route == 'app_admin_editor_new' ? 'Ajouter' : 'Modifier' %}
+{% block title %}{{ action }} un éditeur{% endblock %}
 
 {% block body %}
 
 <div class="container">
-    <h1 class="text-center my-5">Ajouter un éditeur</h1>
+    <h1 class="text-center my-5">{{ action }} un éditeur</h1>
     <div class="w-50 m-auto">
         {{ form_start(form) }}
         {{ form_widget(form) }}
-        <button type="submit" class="btn btn-primary">Ajouter</button>
+        <button type="submit" class="btn btn-primary my-3">{{ action }}</button>
         {{ form_end(form) }}
     </div>
 </div>

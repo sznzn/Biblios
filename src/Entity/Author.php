@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use App\Entity\Book;
-
+use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: AuthorRepository::class)]
 class Author
 {
@@ -18,12 +18,19 @@ class Author
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 2)]
     private ?string $name = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank]
+    #[Assert\Type(\DateTimeImmutable::class)]
+    #[Assert\LessThan(new \DateTimeImmutable('now'))]
     private ?\DateTimeImmutable $dateOfBirth = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\Type(\DateTimeImmutable::class)]
+    #[Assert\GreaterThan(propertyPath: 'dateOfBirth')]
     private ?\DateTimeImmutable $dateOfDeath = null;
 
     #[ORM\Column(length: 255, nullable: true)]
