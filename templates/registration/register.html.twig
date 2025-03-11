@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+    {% for flash_error in app.flashes('verify_email_error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+<section class="container">
+    <h1 class="text-center mt-5">Enregistrez-vous</h1>
+
+    {{ form_errors(registrationForm) }}
+    <div class="text-primary mb-3">
+        <small>Les champs marqués d'un <span class="text-danger">*</span> sont obligatoires</small>
+    </div>
+
+    <style>
+        .required label::before {
+            content: " *";
+            color: red;
+        }
+    </style>
+
+    {{ form_start(registrationForm) }}
+        {{ form_row(registrationForm.pseudo) }}
+        
+        {{ form_row(registrationForm.firstname, {
+            'row_attr': {'class': 'required'}
+        }) }}
+            
+        {{ form_row(registrationForm.lastname, {
+            'row_attr': {'class': 'required'}
+        }) }}
+        
+        {{ form_row(registrationForm.email, {
+            'row_attr': {'class': 'required'}
+        }) }}
+        
+        {{ form_row(registrationForm.plainPassword, {
+            'row_attr': {'class': 'required'}
+        
+        }) }}
+        
+        {{ form_row(registrationForm.roles) }}
+        
+
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+    {{ form_end(registrationForm) }}
+</section>
+{% endblock %}
