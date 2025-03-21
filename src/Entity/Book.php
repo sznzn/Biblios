@@ -71,6 +71,10 @@ class Book
     #[Assert\Count(min: 1, minMessage: 'Un livre doit avoir au moins un auteur')]
     private Collection $authors;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $createdBy = null;
+
     public function __construct()
     {
         $this->authors = new ArrayCollection();
@@ -234,5 +238,16 @@ class Book
     public function __toString(): string
     {
         return $this->title ?? '';
+    }
+
+    public function getCreatedBy(): ?User
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?User $createdBy): static
+    {
+        $this->createdBy = $createdBy;
+        return $this;
     }
 }

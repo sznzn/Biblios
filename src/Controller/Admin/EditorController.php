@@ -43,6 +43,9 @@ final class EditorController extends AbstractController
     #[Route('/{id}/edit', name: 'app_admin_editor_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function new(?Editor $editor, Request $request, EntityManagerInterface $em): Response
     {
+        if($editor){
+            $this->denyAccessUnlessGranted('editor.is_creator', $editor);
+        }
         $editor ??= new Editor();
 
         $form = $this->createForm(EditorType::class, $editor);

@@ -28,6 +28,10 @@ class Editor
     #[ORM\OneToMany(targetEntity: Book::class, mappedBy: 'editor')]
     private Collection $books;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $createdBy = null;
+
     public function __construct()
     {
         $this->books = new ArrayCollection();
@@ -82,5 +86,18 @@ class Editor
         return $this;
     }
 
+    public function getCreatedBy(): ?User
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?User $createdBy): static
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+    
+    
 
 }

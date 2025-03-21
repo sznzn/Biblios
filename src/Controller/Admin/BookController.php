@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Book;
+use App\Entity\User;
 use App\Form\BookType;  
 
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
@@ -41,6 +42,14 @@ final class BookController extends AbstractController
     #[Route('/{id}/edit', name: 'app_admin_book_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function new(?Book $book, Request $request, EntityManagerInterface $em): Response
     {
+        if($book){
+            if(!$this->isGranted('ROLE_ADMIN')){
+                $this->denyAccessUnlessGranted('book.is_creator', $book);
+            }
+        }
+        if(null === $book){
+            $this->denyAccessUnlessGranted('ROLE_USER');
+        }
         $book ??= new Book();
 
         $form = $this->createForm(BookType::class, $book);
@@ -48,6 +57,10 @@ final class BookController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             
+            $user = $this->getUser();
+            if(!$book->getId() && $user instanceof User){
+                $book->setCreatedBy($user);
+            }
             $em->persist($book);
             $em->flush();
 

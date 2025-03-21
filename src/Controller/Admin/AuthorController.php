@@ -12,8 +12,12 @@ use App\Form\AuthorType;
 use App\Repository\AuthorRepository;
 use Pagerfanta\Pagerfanta;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
+// use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 
 #[Route('/admin/author')]
+#[IsGranted('IS_AUTHENTICATED')]
 final class AuthorController extends AbstractController
 {
     #[Route('/', name: 'app_admin_author')]
@@ -50,10 +54,19 @@ final class AuthorController extends AbstractController
         ]);
     }
 
+    
     #[Route('/new', name: 'app_admin_author_new', methods: ['GET', 'POST'])]
     #[Route('/{id}/edit', name: 'app_admin_author_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function new(?Author $author, Request $request, EntityManagerInterface $em): Response
     {
+        if($author){
+            if(!$this->isGranted('ROLE_ADMIN')){
+                $this->denyAccessUnlessGranted('author.is_creator', $author);
+            }
+        }
+        if(null === $author){
+            $this->denyAccessUnlessGranted('ROLE_USER');
+        }
         $author ??= new Author();
         $form = $this->createForm(AuthorType::class, $author);
 
