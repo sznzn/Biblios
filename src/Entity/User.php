@@ -49,15 +49,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?\DateTimeInterface $lastLoginAt = null;
 
-    public function getLastLoginAt(): ?\DateTimeInterface
+    #[ORM\Column(type: 'boolean')]
+    private bool $isActive = true;
+
+    public function isActive(): bool
     {
-        return $this->lastLoginAt;
+        return $this->isActive;
     }
 
-    public function setLastLoginAt(?\DateTimeInterface $lastLoginAt): self
+    public function setIsActive(bool $isActive): self
     {
-        $this->lastLoginAt = $lastLoginAt;
-
+        $this->isActive = $isActive;
         return $this;
     }
 
@@ -180,6 +182,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPseudo(?string $pseudo): static
     {
         $this->pseudo = $pseudo;
+
+        return $this;
+    }
+
+    public function getLastLoginAt(): ?\DateTimeInterface
+    {
+        return $this->lastLoginAt;
+    }
+
+    public function setLastLoginAt(?\DateTimeInterface $lastLoginAt): self
+    {
+        $this->lastLoginAt = $lastLoginAt;
 
         return $this;
     }
